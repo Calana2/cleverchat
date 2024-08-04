@@ -56,7 +56,8 @@ export async function POST(req: NextRequest) {
 
     if (err instanceof z.ZodError) {
       const zodError = err as z.ZodError
-      return NextResponse.json({ status: 500, statusText: zodError.message })
+      const issues = zodError.issues
+      return Response.json({ status: 500, statusText: issues[0].message })
     } else if (err instanceof Error) {
       return NextResponse.json({ status: 500, statusText: err.message })
     } else {

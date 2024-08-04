@@ -1,25 +1,25 @@
 "use client"
 
 import { useState } from "react"
-import { redirect, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import LoadingScreen from "@/components/loadingScreen"
 
 
 export default function Page() {
   async function verify(formData: FormData) {
-    const res: any = await fetch("/api/register/verification", {
+    const res: any = await fetch("../../api/register/verification", {
       method: 'POST',
       body: formData
     })
     const data = await res.json()
     if (data.status == 200) {
       setErrorMessage(null)
-      redirect('/login')
+      router.push('/login')
     } else {
       setErrorMessage(data.statusText)
     }
-      setPending(false)
-      setLoading(false)
+    setPending(false)
+    setLoading(false)
   }
 
   async function forward(formData: FormData) {
@@ -33,16 +33,13 @@ export default function Page() {
     }, 3000)
   }
 
-  function handleClick(_: React.MouseEvent<HTMLButtonElement> | any) {
-    setLoading(true)
-    setPending(true)
-  }
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [pending, setPending] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [forwarded, setForwarded] = useState<string>("normal")
   const searchParams = useSearchParams()
+  const router = useRouter()
   const email = searchParams.get("email") as string
 
 
@@ -52,18 +49,26 @@ export default function Page() {
 
 
       {/* Verify form */}
-      <form action={verify} className="flex flex-col gap-5">
+      <form action={(f:any)=>{
+        setLoading(true)
+        setPending(true)
+        verify(f)
+      }} className="flex flex-col gap-5">
         <input type="text" name="code" placeholder="" className="p-1 border-2 border-gray-300 rounded-md" />
         <input aria-hidden aria-readonly type="text" name="email" value={email} readOnly className="hidden" />
         <button type="submit" disabled={pending} className={`p-2 ${pending ? 'bg-blue-200' : 'bg-blue-500'} 
-    rounded-md text-white font-medium md:w-1/2 mx-auto`} onClick={handleClick} aria-disabled={pending}>
+    rounded-md text-white font-medium md:w-1/2 mx-auto`} aria-disabled={pending}>
           Verificar
         </button>
       </form>
 
 
       {/* Forwarding  form */}
-      <form action={forward}>
+      <form action={(f: any) => {
+        setLoading(true)
+        setPending(true)
+        forward(f)
+      }}>
         <input aria-hidden aria-readonly type="text" name="email" value={email} readOnly className="hidden" />
         <button type="submit" disabled={pending} onClick={() => { setForwarded('sending') }}
           className="text-base font-medium hover:text-blue-500 border-b-2">

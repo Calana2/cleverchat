@@ -1,3 +1,5 @@
+// add this to a cronjob, or use an extra npm package
+// I will use vercel cronjob configuration
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();

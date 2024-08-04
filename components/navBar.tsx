@@ -16,15 +16,13 @@ const ITEMS: LinkItem[] = [
 
 export default function NavBar() {
 const [screenWidth, setScreenWidth] = useState(0);
-const [loading, setLoading] = useState<boolean>(false)
+const [load, setLoad] = useState<boolean>(false)
 const medium="flex-col border-2 px-5 py-10 left-20 top-1/3"
 const small="bottom-0 items-center justify-center w-full py-5 border-t-2"
 
 function handleClick(_: any){
- setLoading(true)
- setTimeout(()=>{
-  setLoading(false)
- },2000)
+ setLoad(true)
+ setLoad(false)
 }
 
   useEffect(() => {
@@ -44,9 +42,9 @@ function handleClick(_: any){
 
 
   return (
-    <nav className={`border-gray-300 rounded-md gap-2 shadow-lg absolute flex ${screenWidth < 768 ? small : medium}`}>
+    <nav className={`border-gray-300 rounded-md gap-2 shadow-lg absolute flex flex-col ${screenWidth < 768 ? small : medium}`}>
       {screenWidth == 0 ? null : ITEMS.map((item, index) => (<div key={index} onClick={handleClick}><NavItem text={item.text} url={item.url} /></div>))}
-      { loading ? <div className="mt-2"><LoadingScreen/></div> : null }
+      { load ? <div className="mt-2"><LoadingScreen/></div> : null }
     </nav>
   )
 }
