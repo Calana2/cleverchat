@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+ id Int @id @default(autoincrement())
+ createdAt DateTime @default(now())
+ role String
+ name String 
+ password String 
+ email String @unique
+ rooms rooms[]           // Un usuario puede estar en cero o mas habitaciones
+ messages messages[]     // Un usuario puede tener cero o mas mensajes
+ verificationCode String
+ verified Boolean
+ recuperations recuperation[] @relation("UserRecuperations")
+}
+
+model recuperation {
+ id Int @id @default(autoincrement())
+ createdAt DateTime @default(now())
+ email String 
+ token String 
+ user  users  @relation("UserRecuperations", fields: [email], references: [email])
+}
+
+model rooms {
+ id Int @id @default(autoincrement())
+ createdAt DateTime @default(now())
+ name String 
+ description String
+ users users[]          // Una habitacion puede tener cero o mas usuarios
+}
+
+model messages {
+ id Int @id @default(autoincrement())
+ createdAt DateTime @default(now())
+ creator users @relation(fields:[creatorId], references:[id])        // Un mensaje tiene un unico creador
+ creatorId Int
+ body String 
+}
+
