@@ -33,7 +33,7 @@ export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <main className="mx-auto w-11/12 md:w-1/3 mt-20 flex flex-col gap-3 p-5 border-2 shadow-md rounded-md">
+    <main className="page p-5">
 
 
       {/* Forwarding form */}

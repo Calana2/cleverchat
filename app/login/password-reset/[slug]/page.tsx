@@ -56,7 +56,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
   return (
-    <main className="mx-auto w-11/12 md:w-1/4 mt-20 flex flex-col gap-3 p-5 border-2 shadow-md rounded-md">
+    <main className="page p-5">
       {isValid ?
 
         (<div><form onSubmit={(f:any) => {
@@ -70,7 +70,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             className="p-1 border-2 border-gray-300 rounded-md" />
           <input type="email" name="email" readOnly value={email} className="hidden" />
           <button type="submit" disabled={pending} aria-disabled={pending}
-            className={`p-2 ${pending ? 'bg-blue-200' : 'bg-blue-500'} 
+            className={`p-2 ${pending ? 'bg-blue-200' : 'bg-blue-500 text-blue-900'} 
     rounded-md text-white font-medium`}>
             Reestablecer
           </button>

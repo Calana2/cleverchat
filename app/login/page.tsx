@@ -15,7 +15,6 @@ export default function Page() {
     const data = await res.json()
     if (data.status == 200) {
       setErrorMessage(null)
-    //  redirect("/")
       router.push("/")
     } else {
       setErrorMessage(data.statusText)
@@ -32,7 +31,7 @@ export default function Page() {
 
 
   return (
-    <main className="mx-auto w-11/12 md:w-1/4 mt-20 flex flex-col gap-3 p-5 border-2 shadow-md rounded-md">
+    <main className="page p-5">
       <h2 className="text-2xl text-center">Inicio de Sesión</h2>
 
 
@@ -54,7 +53,7 @@ export default function Page() {
 
       {/* Link to recovery */}
       <Link href="/login/password-recovery" onClick={()=>{setLoading(true)}}
-        className="mt-5 text-base font-medium hover:text-blue-500 border-b-2">
+        className="mt-5 text-blue-900 font-medium hover:text-blue-500 border-b-2 border-blue-900">
         Reestablecer contraseña
       </Link>
 

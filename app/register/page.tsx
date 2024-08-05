@@ -29,7 +29,7 @@ export default function Page() {
   const router = useRouter()
 
   return (
-    <main className="mx-auto w-11/12 md:w-1/4 mt-20 flex flex-col gap-3 p-5 border-2 shadow-md rounded-md">
+    <main className="page p-5">
       <h2 className="text-2xl text-center">Registro</h2>
 
 
