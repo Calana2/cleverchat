@@ -10,12 +10,12 @@ export async function GET(req: NextRequest) {
   if (p && p === token) {
     try {
       const rooms = await prisma.rooms.findMany({})
-      return NextResponse.json({ status: 200, rooms })
+      return NextResponse.json(rooms,{ status: 200 })
     } catch (err) {
       console.log(err)
-      return NextResponse.json({ status: 500 })
+      return NextResponse.json(null,{ status: 500 })
     }
   }
-  return NextResponse.json({ status: 403 })
+  return NextResponse.json(null,{ status: 403 })
 }
 

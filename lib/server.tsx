@@ -1,10 +1,9 @@
 "use server"
-import {jwtVerify} from "jose"
+import {JWTPayload, JWTVerifyResult, jwtVerify} from "jose"
 import {cookies} from "next/headers"
 
-const OK = 1
 
-export async function decryptJWT(session: any) {
+export async function decryptJWT(session: any | string): Promise<JWTVerifyResult<JWTPayload> | null> {
         try {
          const encodedKey = new TextEncoder().encode(process.env.JWT_SECRET)
          const payload = await jwtVerify(session, encodedKey, {
@@ -13,7 +12,7 @@ export async function decryptJWT(session: any) {
          return payload
         } catch (err) {
          console.log(err)
-          return {payload:{name:"unknown",role:"unknown",yourNisseIs:"unknown"}}
+          return null
         }
 }
 

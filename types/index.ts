@@ -10,11 +10,9 @@ export type VerType = {
  code: string
 }
 
-export type UserData = {
+export type Token = {
  name: string
  role: string
  yourNisseIs: string
- iat: number
- exp: number
 }
 

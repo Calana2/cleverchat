@@ -1,5 +1,5 @@
 // add this to a cronjob, or use an extra npm package
-// I will use vercel cronjob configuration
+// or vercel cronjob configuration
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
@@ -17,14 +17,14 @@ async function cleanupExpiredTokens() {
       },
     });
     
-    console.log(`Tokens eliminados: ${result.count}`);
+    console.log(`Deleted tokens: ${result.count}`);
   } catch (error) {
-    console.error('Error al limpiar tokens:', error);
+    console.error('Error cleaning tokens:', error);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-// Ejecuta la función
+
 cleanupExpiredTokens();
 

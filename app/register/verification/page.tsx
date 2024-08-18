@@ -3,6 +3,10 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import LoadingScreen from "@/components/loadingScreen"
+import { socket } from "@/socket"
+if(!socket.connected){
+  socket.connect()
+}
 
 
 export default function Page() {

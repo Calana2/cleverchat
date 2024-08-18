@@ -2,6 +2,10 @@
 
 import LoadingScreen from "@/components/loadingScreen"
 import { useEffect, useState } from "react"
+import { socket } from "@/socket"
+if(!socket.connected){
+  socket.connect()
+}
 
 export default function Page({ params }: { params: { slug: string } }) {
 

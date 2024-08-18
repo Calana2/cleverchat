@@ -4,7 +4,10 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import LoadingScreen from "@/components/loadingScreen"
-
+import { socket } from "@/socket"
+if(!socket.connected){
+  socket.connect()
+}
 
 export default function Page() {
   async function authenticate(formData: FormData) {
@@ -31,7 +34,7 @@ export default function Page() {
 
 
   return (
-    <main className="page p-5">
+    <main className="page p-5 slide-right">
       <h2 className="text-2xl text-center">Inicio de Sesión</h2>
 
 
@@ -39,8 +42,8 @@ export default function Page() {
       <form action={(f:any)=>{
       setLoading(true)
       setPending(true)
-      authenticate(f)}} 
-        className="flex flex-col gap-5">
+      authenticate(f)}}
+        className="flex flex-col gap-5">  
         <input type="text" name="name" placeholder="Usuario" className="p-1 border-2 border-gray-300 rounded-md" />
         <input type="password" name="password" placeholder="Contraseña" className="p-1 border-2 border-gray-300 rounded-md" />
         <button type="submit" className={`p-2 ${pending ? 'bg-blue-200' : 'bg-blue-500'} 
