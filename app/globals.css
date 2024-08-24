@@ -33,6 +33,14 @@
  }
 }
 
+.grow-5 {
+ flex-grow:0.5;
+}
+
+.grow-6 {
+ flex-grow:0.6;
+}
+
 .grow-7 {
  flex-grow:0.7;
 }

@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import LoadingScreen from "@/components/loadingScreen"
 import { socket } from "@/socket"
+import { useState } from "react"
 if(!socket.connected){
   socket.connect()
 }

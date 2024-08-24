@@ -1,10 +1,10 @@
 // add this to a cronjob, or use an extra npm package
 // or vercel cronjob configuration
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient();
 
-async function cleanupExpiredTokens() {
+export async function cleanupExpiredTokens() {
   const expirationTime = 1 * 60 * 60 * 1000; // 1 hour 
   const currentTime = new Date()
 
@@ -16,7 +16,8 @@ async function cleanupExpiredTokens() {
         },
       },
     });
-    
+
+    console.log(`Running cronjob...`)
     console.log(`Deleted tokens: ${result.count}`);
   } catch (error) {
     console.error('Error cleaning tokens:', error);

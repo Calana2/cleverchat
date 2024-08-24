@@ -11,6 +11,7 @@ type LinkItem = {
 
 const ITEMS: LinkItem[] = [
   { text: "HomeIcon", url: "/dashboard" },
+  { text: "UserIcon", url: "/"},
   { text: "Iniciar Sesión", url: "/login" },
   { text: "Registrarse", url: "/register" },
 ]
@@ -46,8 +47,11 @@ export default function NavBar() {
           </span>
           <Image src={message} alt="icon" />
         </div>
-
-        <div className="flex gap-4 items-center">
+       {/* good for now, i'll change it if it's necesary*/}
+        <div className={`${screenWidth < 768 
+          ? "flex items-center gap-2" 
+           : "flex items-center gap-2"
+          }`}>
           {screenWidth == 0 ? null : ITEMS.map((item, index) => (<div key={index}><NavItem text={item.text} url={item.url} /></div>))}
         </div>
       </div>

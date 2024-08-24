@@ -14,9 +14,11 @@ export default function Home() {
     <main className="h-svh flex items-center justify-center">
       <UserProfile />
       <Link href="/dashboard" className="absolute right-4 top-4">
-        <HomeIcon width={30} />
+        <HomeIcon width={30} className="text-white" />
       </Link>
-      <div className="border w-1/2 h-1/2 flex p-4 flex-col">
+      <div className="w-full h-full flex p-4 flex-col text-white bg-blue-500
+      gap-5 justify-center items-center font-bold rounded-sm border
+      border-neutral-600">
        <Link href="/rooms/global"> Chat Libre </Link>
        <Link href="/rooms/advice"> Consejos </Link>
        <Link href="/rooms/humor"> Humor </Link>

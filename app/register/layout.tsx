@@ -1,5 +1,6 @@
 
 import NavBar from "@/components/navBar";
+import { Suspense } from "react";
 
 export default function Layout({
   children,
@@ -10,7 +11,9 @@ export default function Layout({
     <html lang="en">
       <body>
         <NavBar />
-        {children}
+        <Suspense>
+         {children}
+        </Suspense>
       </body>
     </html>
   )

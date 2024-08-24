@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+import { cleanupExpiredTokens } from "./cronjob.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -10,6 +11,13 @@ const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
+
+// Set cronjob every 5 hours
+  setInterval(()=>{
+   cleanupExpiredTokens()
+  },18000 * 1000)
+
+// Set server
   const httpServer = createServer(handler);
   const io = new Server(httpServer);
 
@@ -21,7 +29,7 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     // Connection
     console.log(socket.handshake.address + " connected")
-    connectedUsers[socket.id] = socket.id
+    connectedUsers[socket.handshake.address] = socket.handshake.address
     io.emit('updateUserList', connectedUsers);
 
     // Join request
@@ -55,7 +63,7 @@ app.prepare().then(() => {
     // Disconnection
     socket.on("disconnect", () => {
       console.log(socket.handshake.address + " disconnected")
-      delete connectedUsers[socket.id]
+      delete connectedUsers[socket.handshake.address]
       // Remove from the room
       const url = socket.handshake.headers.referer
       if(url.indexOf('/rooms/') != -1) {

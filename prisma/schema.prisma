@@ -32,7 +32,7 @@ model recuperation {
  createdAt DateTime @default(now())
  email String 
  token String 
- user  users  @relation("UserRecuperations", fields: [email], references: [email])
+ user  users  @relation("UserRecuperations", fields: [email], references: [email]) // 1 a muchos
 }
 
 model rooms {
