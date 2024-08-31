@@ -76,11 +76,11 @@ export default function Page({ params }: { params: { slug: string } }) {
           <button type="submit" disabled={pending} aria-disabled={pending}
             className={`p-2 ${pending ? 'bg-blue-200' : 'bg-blue-500 text-blue-900'} 
     rounded-md text-white font-medium`}>
-            Reestablecer
+            Restablecer
           </button>
         </form>
           {recovered ? (<div className="successPanel mt-6">
-            Contraseña reestablecida con éxito
+            Contraseña restablecida con éxito
           </div>) : ""}
         </div>) : ""
       }

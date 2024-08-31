@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import { cleanupExpiredTokens } from "./cronjob.js";
+import { Populate } from "./db_script.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -12,6 +13,10 @@ const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
 
+// Populate rooms
+  Populate() 
+
+
 // Set cronjob every 5 hours
   setInterval(()=>{
    cleanupExpiredTokens()
@@ -21,31 +26,38 @@ app.prepare().then(() => {
   const httpServer = createServer(handler);
   const io = new Server(httpServer);
 
-  const connectedUsers = {}
-  const rooms = {}            // rooms{id: string, username: string}[]
+  const connectedUsers = {}   // []{[socket.handshake.address]: string}
+  const rooms = {}            // []{id: string, username: string, ip: string}[]
 
   // Socket management
 
   io.on("connection", (socket) => {
     // Connection
+    // ----------
     console.log(socket.handshake.address + " connected")
-    connectedUsers[socket.handshake.address] = socket.handshake.address
-    io.emit('updateUserList', connectedUsers);
+
+    socket.on("countMe",(_) => {
+     connectedUsers[socket.handshake.address] = socket.handshake.address
+     io.emit('updateUserList', connectedUsers); }
+    )
 
     // Join request
+    // ------------
     socket.on("join_room", (data) => {
       console.log(socket.handshake.address + " has joined to " + data.room)
       socket.join(data.room)
-      // if not exists the room, then create one
+      // if the room doesn't exists then create one
       if (!rooms[data.room]) {
         rooms[data.room] = []
       }
-      // for some reason in some cases the socket emmits twice ?
+      // for some reason in some cases the socket emmits twice in development
+      // ----- 
       const length = rooms[data.room].length
       if (length > 0
         && rooms[data.room][length - 1].ip === socket.handshake.address) {
         rooms[data.room].splice(length - 1, 1) // delete the copy
       }
+      // -----
       rooms[data.room].push({
         username: data.username, id: socket.id,
         ip: socket.handshake.address
@@ -53,14 +65,20 @@ app.prepare().then(() => {
       io.to(data.room).emit(`update${data.room}UserList`, rooms[data.room])
     })
 
+
     // Message
-    socket.on("message", (data) => {
-       console.log(data)
-       io.to(data.room).emit("message", {...data, ip: socket.handshake.address})
-       console.log(socket.handshake.address + " has emited to " + data.room)
-    })
+    // -------
+
+     	 socket.on("message", async (data) => {
+      // Broadcast 
+        console.log(data)
+     	  io.to(data.room).emit("message", data)
+      	 console.log(socket.handshake.address + " has emited to " + data.room)
+   	 })
+
 
     // Disconnection
+    // -------------
     socket.on("disconnect", () => {
       console.log(socket.handshake.address + " disconnected")
       delete connectedUsers[socket.handshake.address]
@@ -80,12 +98,13 @@ app.prepare().then(() => {
        io.to(room).emit(`update${room}UserList`, rooms[room])
       }
 
-      io.emit('updateUserList', Object.values(connectedUsers));
+      io.emit('updateUserList', connectedUsers);
     })
   });
 
 
   // Listening and error handling
+  // ----------------------------
 
   httpServer
     .once("error", (err) => {
@@ -96,3 +115,5 @@ app.prepare().then(() => {
       console.log(`> Ready on http://${hostname}:${port}`);
     });
 });
+
+

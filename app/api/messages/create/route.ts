@@ -1,37 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import { VerType } from "@/types"
-import { FDToObject } from "@/lib"
-import { prisma } from "@/prisma/prisma"
+import { FDToObject } from "@/lib";
+import { prisma } from "@/prisma/prisma";
 import { Prisma } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    var data: FormData = await req.formData()
-    var userVer: VerType = FDToObject(data) as VerType
-    if (!userVer.email) {
-      throw new Error("Usuario desconocido")
-    }
+    const form = await req.formData()
+    console.log(form)
+    const data = FDToObject(form)
 
-    const user = await prisma.users.findFirst({
+    const user = await prisma.users.findUnique({
       where: {
-        email: userVer?.email
+        email: data.email
       }
     })
 
-    if (user?.verificationCode === userVer.code) {
-      await prisma.users.update({
-        where: {
-          id: user.id
-        },
-        data: {
-          verified: true,
-          verificationCode: "ACCEPTED",
-        }
-      })
-      return NextResponse.json({ status: 200 })
-    }
-    throw new Error("Codigo de verificacion incorrecto")
+    const room = await prisma.rooms.findUnique({
+      where: {
+        name: data.room,
+      }
+    })
 
+    if (!user || !room) {
+      throw new Error("Usuario y/o habitacion no encontrada")
+    }
+
+    const message = await prisma.messages.create({
+      data: {
+        creatorId: user?.id as number,
+        roomId: room?.id as number,
+        body: data.message,
+      }
+    })
+
+    return NextResponse.json({ databaseId: message.id }, { status: 200 })
   } catch (err: any) {
     console.log(err)
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -49,7 +51,9 @@ export async function POST(req: NextRequest) {
       }
     } else if (err instanceof Error) {
       return NextResponse.json({ statusText: err.message }, { status: 500 })
+    } else {
+      return NextResponse.json({ statusText: "Error interno del servidor" }, { status: 500 })
     }
-    return NextResponse.json({ statusText: "Error interno del servidor" }, { status: 500 })
   }
+
 }

@@ -7,6 +7,16 @@ export function FDToObject(form : FormData): any {
  return obj  
 }
 
+export function ObjectToFD(obj: any): FormData {
+ const formData = new FormData()
+ for(const key in obj){
+  if(obj.hasOwnProperty(key)){
+   formData.append(key,obj[key])
+  }
+ }
+ return formData
+}
+
 export function generateXDigitCode(num: number): string {
  var s: string = ""
  for(let i=0; i < num; i++){
@@ -46,5 +56,13 @@ export function generateNisse(): string {
  const names: string[] = ["Tontu","Freya","Liv","Gunnar","Egil"]
  const index: number = Math.floor(Math.random() * names.length)
  return names[index]
+}
+
+
+// Id color
+export function generateColor(): string {
+ const colors: string[] = ["red","blue","green","purple","yellow","orange","gray"]
+ const index: number = Math.floor(Math.random() * colors.length)
+ return colors[index]
 }
 

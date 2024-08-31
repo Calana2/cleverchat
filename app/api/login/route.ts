@@ -4,9 +4,8 @@ import { User } from "@/types"
 import { FDToObject, createJWT, generateNisse } from "@/lib"
 import { prisma } from "@/prisma/prisma";
 import { cookies } from "next/headers"
+import { Prisma } from "@prisma/client";
 const bcrypt = require("bcrypt")
-type recovery_put = { email: string, password: string, repeatedPassword: string }
-
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,7 +41,7 @@ export async function POST(req: NextRequest) {
     if (matched) {
       if (matched.verified) {
         const nisseName: string = generateNisse()
-        const token = await createJWT({ name: user.name, role: 'user', yourNisseIs: nisseName })
+        const token = await createJWT({ name: user.name, role: 'user', yourNisseIs: nisseName, email: matched.email })
         cookies().set("CLEVER_CHAT_TOKEN", token, { maxAge: 7 * 24 * 60 * 60, sameSite: "lax" })
         return NextResponse.json({ status: 200 })
       } else {
@@ -57,11 +56,24 @@ export async function POST(req: NextRequest) {
     if (err instanceof z.ZodError) {
       const zodError = err as z.ZodError
       const issues = zodError.issues
-      return Response.json({ status: 500, statusText: issues[0].message })
+      return Response.json({ statusText: issues[0].message }, { status: 500 })
+    } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (err.code) {
+        case 'P1001':
+          return Response.json({ statusText: "Error al intentar acceder a la base de datos, pruebe de nuevo" }, { status: 500 })
+        case 'P1002':
+          return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, { status: 500 })
+        case 'P1002':
+          return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, { status: 500 })
+        case 'P2002':
+          return Response.json({ statusText: "Ya existe una cuenta con ese correo, si es usted y no pudo verificarlo, acceda a: " }, { status: 500 })
+        default:
+          return Response.json({ statusText: "Error relacionado con la base de datos" }, { status: 500 })
+      }
     } else if (err instanceof Error) {
-      return NextResponse.json({ status: 500, statusText: err.message })
+      return NextResponse.json({ statusText: err.message }, { status: 500 })
     } else {
-      return NextResponse.json({ status: 500, statusText: "Error interno del servidor" })
+      return NextResponse.json({ statusText: "Error interno del servidor" }, { status: 500 })
     }
   } // catch
 }

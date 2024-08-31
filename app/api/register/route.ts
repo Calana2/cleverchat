@@ -3,6 +3,7 @@ import { z } from "zod";
 import { User } from "@/types"
 import { FDToObject, generateXDigitCode } from "@/lib"
 import { prisma } from "@/prisma/prisma";
+import { Prisma } from "@prisma/client";
 import nodemailer from "nodemailer"
 import { cookies } from "next/headers"
 
@@ -42,15 +43,13 @@ export async function POST(req: NextRequest) {
     }
 
 
-    const existsEmail = await prisma.users.findFirst({
+    await prisma.users.findFirst({
       where: {
         name: user.email
       }
     })
 
-    if (existsEmail) {
-     throw new Error("Ya existe una cuenta con este correo electrónico")
-    }
+
 
     const code: string = generateXDigitCode(6)
 
@@ -92,13 +91,29 @@ export async function POST(req: NextRequest) {
     if (err instanceof z.ZodError) {
       const zodError = err as z.ZodError
       const issues = zodError.issues
-      return Response.json({ status: 500, statusText: issues[0].message })
+      return Response.json({ statusText: issues[0].message }, {status:500})
+
+    } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      switch(err.code) {
+       case 'P1001': 
+        return Response.json({ statusText: "Error al intentar acceder a la base de datos, pruebe de nuevo" }, {status:500})
+       case 'P1002': 
+        return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, {status:500})
+       case 'P1002': 
+        return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, {status:500})
+       case 'P2002': 
+        return Response.json({ statusText: "Ya existe una cuenta con ese correo, si es usted y no pudo verificarlo, acceda a: " }, {status:500})
+       default:
+        return Response.json({ statusText: "Error relacionado con la base de datos" }, {status:500})
+      }
+
     } else if (err instanceof Error) {
       console.log(err.message)
-      return Response.json({ status: 500, statusText: err.message })
+      return Response.json({ statusText: err.message }, {status:500})
+
     } else {
       console.log(err)
-      return Response.json({ status: 500, statusText: "Error interno del servidor" })
+      return Response.json({ statusText: "Error interno del servidor" }, {status:500})
     }
   } // catch
 }

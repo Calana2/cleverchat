@@ -18,12 +18,12 @@ export async function GET(req: NextRequest) {
 
   } catch (err) {
     if (err instanceof Error) {
-      return NextResponse.json({ status: 500, statusText: err.message })
+      return NextResponse.json({ statusText: err.message }, {status:500})
     } else {
-      return NextResponse.json({ status: 500, statusText: "Error interno del servidor" })
+      return NextResponse.json({ statusText: "Error interno del servidor" }, {status:500})
     }
   }
-      return NextResponse.json({ status: 500, statusText: "Error interno del servidor" })
+      return NextResponse.json({ statusText: "Error interno del servidor" },{status:500})
 }
 
 

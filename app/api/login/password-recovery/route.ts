@@ -1,5 +1,6 @@
 import { FDToObject } from "@/lib";
 import { prisma } from "@/prisma/prisma";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer"
 import { v4 as uuidv4 } from "uuid"
@@ -78,38 +79,51 @@ export async function PUT(req: NextRequest) {
       email: z.string().email(),
     })
 
-     userSchema.parse(input)
-    
+    userSchema.parse(input)
+
 
     // Update the database
     await prisma.users.update({
-     where: {
-      email: input.email
-     },
-     data: {
-       password: input.password,   // hashed for prisma middleware
-       verificationCode: "ACCEPTED",
-       verified: true,
-     }
-    }) 
-
-    await prisma.recuperation.deleteMany({
-     where:{
-      email: input.email
-     }
+      where: {
+        email: input.email
+      },
+      data: {
+        password: input.password,   // hashed for prisma middleware
+        verificationCode: "ACCEPTED",
+        verified: true,
+      }
     })
 
-  return NextResponse.json({ status: 200 }) 
+    await prisma.recuperation.deleteMany({
+      where: {
+        email: input.email
+      }
+    })
+
+    return NextResponse.json({ status: 200 })
 
   } catch (err) {
     if (err instanceof z.ZodError) {
       const zodError = err as z.ZodError
       const issues = zodError.issues
-      return Response.json({ status: 500, statusText: issues[0].message }) 
+      return Response.json({ statusText: issues[0].message }, { status: 500 })
+    } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (err.code) {
+        case 'P1001':
+          return Response.json({ statusText: "Error al intentar acceder a la base de datos, pruebe de nuevo" }, { status: 500 })
+        case 'P1002':
+          return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, { status: 500 })
+        case 'P1002':
+          return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, { status: 500 })
+        case 'P2002':
+          return Response.json({ statusText: "Ya existe una cuenta con ese correo, si es usted y no pudo verificarlo, acceda a: " }, { status: 500 })
+        default:
+          return Response.json({ statusText: "Error relacionado con la base de datos" }, { status: 500 })
+      }
     } else if (err instanceof Error) {
-      return NextResponse.json({ status: 500, statusText: err.message })
+      return NextResponse.json({ statusText: err.message }, { status: 500 })
     } else {
-      return NextResponse.json({ status: 500, statusText: "Error interno del servidor" })
+      return NextResponse.json({ statusText: "Error interno del servidor" }, { status: 500 })
     }
   }
 }

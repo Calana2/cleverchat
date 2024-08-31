@@ -1,23 +1,39 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import {useState} from "react"
+import { useEffect, useState } from "react"
 import appLogo from "@/public/appLogo.png"
 import { socket } from "@/socket"
-if(!socket.connected){
-  socket.connect()
+
+interface UserList {
+  [uid: string]: string
 }
 
 export default function Page() {
-const [users,setUsers] = useState<UserList[]>([])
+  const [users, setUsers] = useState<UserList[]>([])
+  const [cookies, setCookies] = useState<string>("")
 
-interface UserList {
- [uid: string]: string
-}
 
-socket.on("updateUserList",(data)=>{
- setUsers(data)  
-})
+  useEffect(() => {
+    setCookies(document.cookie)
+    if (socket.connected) {
+      onConnect()
+    }
+
+    async function onConnect() {
+      socket.emit("countMe", {})
+    }
+
+    socket.on("updateUserList", (data) => {
+      setUsers(data)
+    })
+    socket.on("connect", onConnect);
+
+    return () => {
+      socket.off("connect")
+      socket.off("updateUserList")
+    }
+  }, [])
 
   return (
     <main className="page md:w-full h-full pb-10 flex">
@@ -37,21 +53,21 @@ socket.on("updateUserList",(data)=>{
       <div className="p-5 flex flex-col gap-2">
         <h2 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5  mb-2"> Habitaciones disponibles </h2>
         <ul className="ml-4 list-disc text-blue-700 grid grid-cols-2 md:grid-cols-5">
-              <li>
-                <Link href="/rooms/global" className="hover:cursor-pointer hover:text-blue-500">
-                  Chat Libre
-                </Link>
-              </li>
-              <li>
-                <Link href="/rooms/advice" className="hover:cursor-pointer hover:text-blue-500">
-                  Consejos
-                </Link>
-              </li>
-              <li>
-                <Link href="/rooms/humor" className="hover:cursor-pointer hover:text-blue-500">
-                  Humor
-                </Link>
-              </li>
+          <li>
+            <Link href="/rooms/global" className="hover:cursor-pointer hover:text-blue-500">
+              Chat Libre
+            </Link>
+          </li>
+          <li>
+            <Link href="/rooms/advice" className="hover:cursor-pointer hover:text-blue-500">
+              Consejos
+            </Link>
+          </li>
+          <li>
+            <Link href="/rooms/humor" className="hover:cursor-pointer hover:text-blue-500">
+              Humor
+            </Link>
+          </li>
         </ul>
       </div>
 
@@ -60,8 +76,17 @@ socket.on("updateUserList",(data)=>{
       <div className="p-5">
         <h3 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5 mb-2">Estadísticas</h3>
 
-        <span className="text-blue-900 font-semibold">{`Número de usuarios activos: ${Object.keys(users).length} `}
-        </span>
+        <p className="text-blue-900 font-semibold">{`Número de usuarios activos: ${Object.values(users).length} `}
+        </p>
+
+      </div>
+
+      <div className="p-5 flex">
+        {cookies && !cookies.includes('CLEVER_CHAT_TOKEN') ?
+          (<p className="text-blue-900 font-semibold border p-1 border-blue-900">
+            Necesita iniciar sesión para iniciar una cuenta
+          </p>) : ""
+        }
       </div>
     </main>)
 }  

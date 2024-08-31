@@ -6,16 +6,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 DATABASE_URL="your_database_connection_query"                        // This project uses Prisma ORM
 
+NODEMAILER_SERVER="your_smtp_server"
+
 NODEMAILER_USER="your_email"
 
 NODEMAILER_PASS="your_email_password_or_passcode"
 
-// You can generate these two easily with: openssl rand --base64 30
+// You can generate this one easily with: openssl rand --base64 30
 
 JWT_SECRET="x_character_secret"
-
-API_SECRET="x_character_secret"
-
 
 
 #### Run the development server:

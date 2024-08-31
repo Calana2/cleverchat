@@ -20,8 +20,7 @@ model users {
  name String 
  password String 
  email String @unique
- rooms rooms[]           // Un usuario puede estar en cero o mas habitaciones
- messages messages[]     // Un usuario puede tener cero o mas mensajes
+ messages messages[]     
  verificationCode String
  verified Boolean
  recuperations recuperation[] @relation("UserRecuperations")
@@ -32,22 +31,23 @@ model recuperation {
  createdAt DateTime @default(now())
  email String 
  token String 
- user  users  @relation("UserRecuperations", fields: [email], references: [email]) // 1 a muchos
-}
-
-model rooms {
- id Int @id @default(autoincrement())
- createdAt DateTime @default(now())
- name String 
- description String
- users users[]          // Una habitacion puede tener cero o mas usuarios
+ user  users  @relation("UserRecuperations", fields: [email], references: [email]) 
 }
 
 model messages {
  id Int @id @default(autoincrement())
  createdAt DateTime @default(now())
- creator users @relation(fields:[creatorId], references:[id])        // Un mensaje tiene un unico creador
- creatorId Int
  body String 
+ creator users @relation(fields:[creatorId], references:[id])      
+ creatorId Int
+ room rooms @relation(fields:[roomId],references:[id])
+ roomId Int
+}
+
+model rooms {
+ id Int @id @default(autoincrement())
+ name String @unique
+ description String
+ messages messages[]
 }
 

@@ -33,6 +33,7 @@ export default function Page() {
   const router = useRouter()
 
 
+
   return (
     <main className="page p-5 slide-right">
       <h2 className="text-2xl text-center">Inicio de Sesión</h2>
@@ -57,7 +58,7 @@ export default function Page() {
       {/* Link to recovery */}
       <Link href="/login/password-recovery" onClick={()=>{setLoading(true)}}
         className="mt-5 text-blue-900 font-medium hover:text-blue-500 border-b-2 border-blue-900">
-        Reestablecer contraseña
+        Restablecer contraseña
       </Link>
 
 
