@@ -85,7 +85,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: 200, email: `${user.email}` })
 
   } catch (err: any) {
-
+    const shortenedURL: string = req.url.replace(/^https?:\/\//, '')
+    const domain: string = shortenedURL.split('/')[0]
     console.log(err)
 
     if (err instanceof z.ZodError) {
@@ -99,10 +100,8 @@ export async function POST(req: NextRequest) {
         return Response.json({ statusText: "Error al intentar acceder a la base de datos, pruebe de nuevo" }, {status:500})
        case 'P1002': 
         return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, {status:500})
-       case 'P1002': 
-        return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, {status:500})
        case 'P2002': 
-        return Response.json({ statusText: "Ya existe una cuenta con ese correo, si es usted y no pudo verificarlo, acceda a: " }, {status:500})
+        return Response.json({ statusText: `Ya existe una cuenta con ese correo, si es usted y no pudo verificarlo, acceda a  https://${domain}/login/password-recovery y reestablezca su cuenta introduciendo una nueva contraseña con su correo electrónico` }, {status:500})
        default:
         return Response.json({ statusText: "Error relacionado con la base de datos" }, {status:500})
       }

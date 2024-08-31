@@ -21,13 +21,13 @@ export async function cleanupExpiredTokens() {
 
 
     // Messages
+    const deletedMessages = undefined
     for (let i = 1; i <= 3; i++) {
       const messageCount = await prisma.messages.count({
         where: {
           roomId: i
         }
       })
-      const deletedMessages = 0
 
       if (messageCount > LENGTH) {
         const oldestMessages = await prisma.messages.findMany({
@@ -54,7 +54,7 @@ export async function cleanupExpiredTokens() {
     // Log  
     console.log(`> Running cronjob...`)
     console.log(`>> Tokens deleted: ${deletedTokens.count}`);
-    console.log(`>> Messages deleted: ${deletedMessages.count}`);
+    console.log(`>> Messages deleted: ${deletedMessages !== undefined ? deletedMessages.count : "0"}`);
   } catch (error) {
     console.error('Error cleaning tokens and/or messages:', error);
   } finally {

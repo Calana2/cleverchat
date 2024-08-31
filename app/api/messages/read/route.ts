@@ -55,10 +55,6 @@ export async function GET(req: NextRequest) {
           return Response.json({ statusText: "Error al intentar acceder a la base de datos, pruebe de nuevo" }, { status: 500 })
         case 'P1002':
           return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, { status: 500 })
-        case 'P1002':
-          return Response.json({ statusText: "Tiempo excedido accediendo a la base de datos, pruebe de nuevo" }, { status: 500 })
-        case 'P2002':
-          return Response.json({ statusText: "Ya existe una cuenta con ese correo, si es usted y no pudo verificarlo, acceda a: " }, { status: 500 })
         default:
           return Response.json({ statusText: "Error relacionado con la base de datos" }, { status: 500 })
       }

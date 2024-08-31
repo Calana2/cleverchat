@@ -1,10 +1,12 @@
+## Chat App
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
 #### First modify the .env file:
 
-DATABASE_URL="your_database_connection_query"                        // This project uses Prisma ORM
+DATABASE_URL="your_database_connection_query"                        // postgresql
 
 NODEMAILER_SERVER="your_smtp_server"
 
