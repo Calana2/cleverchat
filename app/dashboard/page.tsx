@@ -43,16 +43,17 @@ export default function Page() {
       <div className="flex flex-col md:flex-row gap-5 items-center p-5">
         <Image className="border-2 border-neutral-600"
           src={appLogo} alt="logo" width={300} height={200} />
-        <h1 className="text-2xl font-bold font-serif text-center text-blue-900">
+        <h1 className="text-2xl md:text-3xl font-bold font-serif text-center text-blue-900">
           CleverChat es un aplicación conversacional creada con Next.js y Socket.io
+          Este no es un proyecto comercial sino una app libre 
         </h1>
       </div>
 
 
       {/* section 2 */}
-      <div className="p-5 flex flex-col gap-2">
+      <div className="p-5 flex flex-col gap-2 md:text-2xl">
         <h2 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5  mb-2"> Habitaciones disponibles </h2>
-        <ul className="ml-4 list-disc text-blue-700 grid grid-cols-2 md:grid-cols-5">
+        <ul className="ml-8 list-disc text-blue-700 grid grid-cols-2 md:grid-cols-5">
           <li>
             <Link href="/rooms/global" className="hover:cursor-pointer hover:text-blue-500">
               Chat Libre
