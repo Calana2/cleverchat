@@ -77,7 +77,7 @@ export default function Page() {
       <div className="p-5">
         <h3 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5 mb-2">Estadísticas</h3>
 
-        <p className="text-blue-900 font-semibold">{`Número de usuarios activos: ${Object.values(users).length} `}
+        <p className="text-blue-900 font-semibold">{`Número de usuarios activos: ${users} `}
         </p>
 
       </div>

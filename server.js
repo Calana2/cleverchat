@@ -26,7 +26,8 @@ app.prepare().then(() => {
   const httpServer = createServer(handler);
   const io = new Server(httpServer);
 
-  const connectedUsers = {}   // []{[socket.handshake.address]: string}
+//  const connectedUsers = {}   // []{[socket.handshake.address]: string}
+  var connectedUsers = 0
   const rooms = {}            // []{id: string, username: string, ip: string}[]
 
   // Socket management
@@ -37,7 +38,8 @@ app.prepare().then(() => {
     console.log(socket.handshake.address + " connected")
 
     socket.on("countMe",(_) => {
-     connectedUsers[socket.handshake.address] = socket.handshake.address
+     connectedUsers++
+     //connectedUsers[socket.handshake.address] = socket.handshake.address
      io.emit('updateUserList', connectedUsers); }
     )
 
@@ -81,7 +83,8 @@ app.prepare().then(() => {
     // -------------
     socket.on("disconnect", () => {
       console.log(socket.handshake.address + " disconnected")
-      delete connectedUsers[socket.handshake.address]
+      //delete connectedUsers[socket.handshake.address]
+      connectedUsers--
       // Remove from the room
       const url = socket.handshake.headers.referer
       if(url.indexOf('/rooms/') != -1) {
