@@ -43,9 +43,9 @@ export default function Page() {
       <div className="flex flex-col md:flex-row gap-5 items-center p-5">
         <Image className="border-2 border-neutral-600"
           src={appLogo} alt="logo" width={300} height={200} />
-        <h1 className="text-2xl md:text-3xl font-bold font-serif text-center text-blue-900">
+        <h1 className="text-2xl md:text-3xl font-bold font-serif text-center text-blue-900
+         md:w-1/2 break-words">
           CleverChat es un aplicación conversacional creada con Next.js y Socket.io
-          Este no es un proyecto comercial sino una app libre 
         </h1>
       </div>
 
@@ -77,7 +77,8 @@ export default function Page() {
       <div className="p-5">
         <h3 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5 mb-2">Estadísticas</h3>
 
-        <p className="text-blue-900 font-semibold">{`Número de usuarios activos: ${users} `}
+        <p className="text-blue-900 font-semibold">{`Número de usuarios activos: ${users}`}
+      {/* The number could not be the correct one*/}
         </p>
 
       </div>
