@@ -11,7 +11,8 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
+
 
 // Populate rooms
   Populate() 
@@ -26,22 +27,24 @@ app.prepare().then(() => {
   const httpServer = createServer(handler);
   const io = new Server(httpServer);
 
-//  const connectedUsers = {}   // []{[socket.handshake.address]: string}
-  var connectedUsers = 0
   const rooms = {}            // []{id: string, username: string, ip: string}[]
 
   // Socket management
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     // Connection
     // ----------
     console.log(socket.handshake.address + " connected")
-
-    socket.on("countMe",(_) => {
-     connectedUsers++
-     //connectedUsers[socket.handshake.address] = socket.handshake.address
-     io.emit('updateUserList', connectedUsers); }
-    )
+    const sockets = await io.sockets.fetchSockets();
+    setTimeout(()=>{
+     io.emit("updateUserList",sockets.length) 
+    },500)
+    // just in case
+    setTimeout(()=>{
+     io.emit("updateUserList",sockets.length) 
+    },3000)
+     
+  
 
     // Join request
     // ------------
@@ -81,10 +84,8 @@ app.prepare().then(() => {
 
     // Disconnection
     // -------------
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async() => {
       console.log(socket.handshake.address + " disconnected")
-      //delete connectedUsers[socket.handshake.address]
-      connectedUsers--
       // Remove from the room
       const url = socket.handshake.headers.referer
       if(url.indexOf('/rooms/') != -1) {
@@ -101,7 +102,8 @@ app.prepare().then(() => {
        io.to(room).emit(`update${room}UserList`, rooms[room])
       }
 
-      io.emit('updateUserList', connectedUsers);
+    const sockets = await io.sockets.fetchSockets();
+    io.emit("updateUserList",sockets.length)
     })
   });
 
@@ -118,5 +120,6 @@ app.prepare().then(() => {
       console.log(`> Ready on http://${hostname}:${port}`);
     });
 });
+
 
 

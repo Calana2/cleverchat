@@ -5,12 +5,8 @@ import { useEffect, useState } from "react"
 import appLogo from "@/public/appLogo.png"
 import { socket } from "@/socket"
 
-interface UserList {
-  [uid: string]: string
-}
-
 export default function Page() {
-  const [users, setUsers] = useState<UserList[]>([])
+  const [users, setUsers] = useState<any>(0)
   const [cookies, setCookies] = useState<string>("")
 
 
@@ -21,7 +17,6 @@ export default function Page() {
     }
 
     async function onConnect() {
-      socket.emit("countMe", {})
     }
 
     socket.on("updateUserList", (data) => {
@@ -51,8 +46,8 @@ export default function Page() {
 
 
       {/* section 2 */}
-      <div className="p-5 flex flex-col gap-2 md:text-2xl">
-        <h2 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5  mb-2"> Habitaciones disponibles </h2>
+      <div className="p-5 flex flex-col gap-2">
+        <h2 className="bg-blue-500 text-white rounded-md font-semibold p-2 pl-5  mb-2"> Habitaciones disponibles </h2>
         <ul className="ml-8 list-disc text-blue-700 grid grid-cols-2 md:grid-cols-5">
           <li>
             <Link href="/rooms/global" className="hover:cursor-pointer hover:text-blue-500">
@@ -77,8 +72,9 @@ export default function Page() {
       <div className="p-5">
         <h3 className="bg-blue-500 text-white rounded-md text-lg font-semibold p-2 pl-5 mb-2">Estadísticas</h3>
 
-        <p className="text-blue-900 font-semibold">{`Número de usuarios activos: ${users}`}
-      {/* The number could not be the correct one*/}
+        <p className="text-blue-900 font-semibold">
+        Número de usuarios activos:  {users ? users : ""}   
+      {/* The number could not be the correct one, this was the nicest approach i was able to get */}
         </p>
 
       </div>
