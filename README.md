@@ -4,10 +4,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-npm install
+### 1. Install dependencies
 
-#### First modify the .env file:
+``` bash
+  npm install
+```
 
+### 2. Modify the .env file:
+
+``` env
 DATABASE_URL="your_database_connection_query"                       
 
 NODEMAILER_SERVER="your_smtp_server"
@@ -16,17 +21,21 @@ NODEMAILER_USER="your_email"
 
 NODEMAILER_PASS="your_email_password_or_passcode"
 
-// You can generate this one easily with: openssl rand --base64 30
-
+// You can generate this one easily with: `openssl rand --base64 30`
 JWT_SECRET="x_character_secret"
 
+```
 
-#### This project uses Prisma ORM
 
+
+#### 3. Generate database with Prisma
+
+``` bash
 npx prisma generate && npx prisma push
 
+```
 
-#### Run the development server:
+#### 4. Run the development server:
 
 ```bash
 npm run dev
