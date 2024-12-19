@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <main className="h-svh flex items-center justify-center">
       <UserProfile />
-      <Link href="/dashboard" className="absolute right-4 top-4">
+      <Link href="/nexus" className="absolute right-4 top-4">
         <HomeIcon width={30} className="text-white" />
       </Link>
       <div className="w-full h-full flex p-4 flex-col text-white bg-blue-500

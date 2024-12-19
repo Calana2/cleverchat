@@ -34,9 +34,6 @@ export default function Page() {
 
   return (
     <main className="page p-5 slide-right">
-      <h2 className="text-2xl text-center">Registro</h2>
-
-
       {/* Register form */}
       <form action={(f: any) => {
         setPending(true)
